@@ -1,0 +1,75 @@
+{
+    "definition": {
+        "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+        "actions": {
+            "Send_an_email_(V2)": {
+                "inputs": {
+                    "body": {
+                        "Attachments": [
+                            {
+                                "ContentBytes": "@{base64(triggerBody()?['report'])}",
+                                "Name": "report.html"
+                            }
+                        ],
+                        "Bcc": "",
+                        "Body": "<p>Good morning,<br>\n<br>\nVICGOV Azure activity weekly report has been generated successfully.<br>\nPlease find the attached <span style=\"background-color: rgb(97,189,109)\"><strong>report.html</strong></span> file for your review.<br>\n<br>\n<br>\n<img src=data:image/jpeg;base64,@{triggerBody()?['azuremonitoreventtable_bar_graph']}><br>\n<br>\n<img src=data:image/jpeg;base64,@{triggerBody()?['azuremonitoreventtable_hbar_graph']}><br>\n<br>\n<img src=data:image/jpeg;base64,@{triggerBody()?['azuremonitoreventtable_pie_graph1']}><br>\n<br>\n<br>\nRegards,<br>\n<br>\nThank you.</p>",
+                        "Subject": "VICGOV Azure Activity Weekly Report",
+                        "To": ""
+                    },
+                    "host": {
+                        "connection": {
+                            "name": "@parameters('$connections')['office365']['connectionId']"
+                        }
+                    },
+                    "method": "post",
+                    "path": "/v2/Mail"
+                },
+                "runAfter": {},
+                "type": "ApiConnection"
+            }
+        },
+        "contentVersion": "1.0.0.0",
+        "parameters": {
+            "$connections": {
+                "defaultValue": {},
+                "type": "Object"
+            }
+        },
+        "triggers": {
+            "manual": {
+                "inputs": {
+                    "schema": {
+                        "properties": {
+                            "azuremonitoreventtable_bar_graph": {
+                                "type": "string"
+                            },
+                            "azuremonitoreventtable_hbar_graph": {
+                                "type": "string"
+                            },
+                            "azuremonitoreventtable_pie_graph1": {
+                                "type": "string"
+                            },
+                            "report": {
+                                "type": "string"
+                            }
+                        },
+                        "type": "object"
+                    }
+                },
+                "kind": "Http",
+                "type": "Request"
+            }
+        }
+    },
+    "parameters": {
+        "$connections": {
+            "value": {
+                "office365": {
+                    "connectionId": "",
+                    "connectionName": "office365",
+                    "id": ""
+                }
+            }
+        }
+    }
+}
